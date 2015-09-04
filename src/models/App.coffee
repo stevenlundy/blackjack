@@ -7,14 +7,17 @@ class window.App extends Backbone.Model
     @set 'dealerHand', deck.dealDealer()
 
     # listen for stand button, and make dealer start playing
-    (@get 'playerHand').on 'stand', (@get 'dealerHand').play ,(@get 'dealerHand')
+    (@get 'playerHand').on 'standing', @get('dealerHand').play ,(@get 'dealerHand')
+    #resume work here later...
+    # (@get 'playerHand').on 'lost'
+    # (@get 'playerHand').on 'won'
 
 
-
-  #before
-  #active
+  #beforeTurn
+  #playing
     # ---> lost
-    # ---> standing
+    # ---> standing --- > won
+    # ---> won
 
   #endOfTurn
   #gameState: inactiv
