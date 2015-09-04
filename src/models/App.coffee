@@ -9,3 +9,16 @@ class window.App extends Backbone.Model
     # listen for stand button, and make dealer start playing
     (@get 'playerHand').on 'stand', (@get 'dealerHand').play ,(@get 'dealerHand')
 
+
+
+  #before
+  #active
+    # ---> lost
+    # ---> standing
+
+  #endOfTurn
+  #gameState: inactiv
+    #dealer has a choice--
+      #play
+      #declare victory
+
