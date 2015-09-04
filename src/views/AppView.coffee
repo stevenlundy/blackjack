@@ -10,6 +10,6 @@ class window.AppView extends Backbone.View
   render: ->
     @$el.children().detach()
     @$el.html @template()
-    @$('.player-hand-container').html new HandView({model: @model.get('players').first()}).el
+    @$('.player-hand-container').html new PlayersView({collection: @model.get('players')}).el
     @$('.dealer-hand-container').html new DealerView(model: @model.get 'dealerHand').el
 
