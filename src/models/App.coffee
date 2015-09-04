@@ -6,3 +6,6 @@ class window.App extends Backbone.Model
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
 
+    # listen for stand button, and make dealer start playing
+    (@get 'playerHand').on 'stand', (@get 'dealerHand').play ,(@get 'dealerHand')
+
