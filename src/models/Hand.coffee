@@ -1,22 +1,22 @@
-class window.Hand extends Backbone.Collection
-  model: Card
+class window.Hand extends Backbone.Model
 
-  initialize: (array, @deck, @isDealer) ->
+  initialize: (cards, @deck, @isDealer , @player) ->
 
   hit: ->
-    @add(@deck.pop())
-    if @minScore() > 21 then @trigger('bust')
-    @last()
+    @get('cards').push(@deck.pop())
+    @trigger('hit', @)
+    if @minScore() > 21 then @trigger('lost', @)
+    _.last(@get('cards'))
 
   stand: -> 
     @trigger('standing', @)
 
 
-  hasAce: -> @reduce (memo, card) ->
+  hasAce: -> _.reduce @get('cards'), (memo, card) ->
     memo or card.get('value') is 1
   , 0
 
-  minScore: -> @reduce (score, card) ->
+  minScore: -> _.reduce @get('cards'), (score, card) ->
     score + if card.get 'revealed' then card.get 'value' else 0
   , 0
 
@@ -27,7 +27,8 @@ class window.Hand extends Backbone.Collection
     [@minScore(), @minScore() + 10 * @hasAce()]
   
   play: ->
-    @first().flip()
+    _.first(@get('cards')).flip()
+    @trigger('reveal', @)
     while @minScore() < 17 then @hit()
     @stand()
 
