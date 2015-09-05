@@ -4,7 +4,7 @@ class window.App extends Backbone.Model
   initialize: ->
     @set 'deck', deck = new Deck()
     @set 'dealerHand', deck.dealDealer()
-    @set 'players', new Players(deck.dealPlayer(1))
+    @set 'players', new Players([deck.dealPlayer(1),deck.dealPlayer(2),deck.dealPlayer(3),deck.dealPlayer(4),deck.dealPlayer(5)])
     @set 'currentPlayer', @get('players').first()
     @get('currentPlayer').set 'state', 'playing'
 
@@ -16,7 +16,7 @@ class window.App extends Backbone.Model
 
 
   chooseNextTurn: -> 
-    nextPlayer = @get('players').findWhere { 'state':'playing' }
+    nextPlayer = @get('players').findWhere { 'state':'beforeTurn' }
     if nextPlayer? 
       @setCurrentPlayer(nextPlayer)
     else 
@@ -38,9 +38,11 @@ class window.App extends Backbone.Model
     dealerScore = @get('dealerHand').minScore()
     if dealerScore > 21 then _.each waitingPlayers, (player) ->
       player.set('state', 'won')
-    _.each waitingPlayers, (player) ->
-      if player.minScore() > dealerScore then player.set 'state', 'won'
-      else player.set 'state', 'lost'
+    else  
+      _.each waitingPlayers, (player) ->
+        # debugger;
+        if player.minScore() > dealerScore then player.set 'state', 'won'
+        else player.set 'state', 'lost'
 
 
   #handles changing the event listner
@@ -48,8 +50,8 @@ class window.App extends Backbone.Model
     @get('currentPlayer').off 'change:state'
     @set('currentPlayer', nextPlayer);
     if nextPlayer?
-      @get('currentPlayer').on 'change:state', @chooseNextTurn, @
       nextPlayer.set 'state', 'playing' 
+      @get('currentPlayer').on 'change:state', @chooseNextTurn, @
 
 
 

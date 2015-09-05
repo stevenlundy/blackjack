@@ -18,7 +18,7 @@ class window.HandView extends Backbone.View
     #this wont work!
     # debugger;
     @model.on 'hit', @render, @
-    @model.on 'change:state', @render, @
+    @model.on 'change', @render, @
     @render()
 
 
@@ -27,6 +27,7 @@ class window.HandView extends Backbone.View
     'click .stand-button': -> @model.stand()
 
   render: ->
+    # debugger
     @$el.children().detach()
     @$el.html @template @model.attributes
     @$el.find('button').hide() unless @model.get('state') is 'playing'
