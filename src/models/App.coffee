@@ -18,10 +18,9 @@ class window.App extends Backbone.Model
   chooseNextTurn: -> 
     nextPlayer = @get('players').findWhere { 'state':'playing' }
     if nextPlayer? 
-      @set 'currentPlayer', nextPlayer
-      nextPlayer.set 'state', 'playing'
+      @setCurrentPlayer(nextPlayer)
     else 
-      @set 'currentPlayer', null
+      @setCurrentPlayer(null)
       @dealerTurn()
 
 
@@ -42,6 +41,24 @@ class window.App extends Backbone.Model
     _.each waitingPlayers, (player) ->
       if player.minScore() > dealerScore then player.set 'state', 'won'
       else player.set 'state', 'lost'
+
+
+  #handles changing the event listner
+  setCurrentPlayer: (nextPlayer) ->
+    @get('currentPlayer').off 'change:state'
+    @set('currentPlayer', nextPlayer);
+    if nextPlayer?
+      @get('currentPlayer').on 'change:state', @chooseNextTurn, @
+      nextPlayer.set 'state', 'playing' 
+
+
+
+
+
+
+
+
+
 
 
 
