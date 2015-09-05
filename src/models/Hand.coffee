@@ -1,6 +1,6 @@
 class window.Hand extends Backbone.Model
 
-  initialize: (cards, @deck, @isDealer , @player) ->
+  initialize: (params, @deck, @isDealer) ->
 
   hit: ->
     @get('cards').push(@deck.pop())

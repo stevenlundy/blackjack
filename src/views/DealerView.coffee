@@ -7,7 +7,6 @@ class window.DealerView extends Backbone.View
                         </h2>'
 
   initialize: ->
-    #this wont work!
     @model.on 'hit', @render, @
     @model.on 'reveal', @render, @
     @render()

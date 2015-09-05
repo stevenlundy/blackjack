@@ -5,8 +5,18 @@ class window.HandView extends Backbone.View
                         <button class="hit-button">Hit</button> 
                         <button class="stand-button">Stand</button>
                         </h2>'
+  stateDivs:
+    standing:'<h1 class="standing">I Am Waiting</h1>' 
+    won: '<h1 class="won">I have Beaten the Dealer fair and square</h1>'
+    lost: '<h1 class="lost">I have lost the gAMe and shAMed my fAMily</h1>'
+    beforeTurn:'<h1 class="beforeTurn"></h1>' 
+    playing:'<h1 class="playing"></h1>'
+    blackJack:'<h1 class="blackJack">Winner Winner Chicken Dinner</h1>'
+  
+
   initialize: ->
     #this wont work!
+    # debugger;
     @model.on 'hit', @render, @
     @model.on 'change:state', @render, @
     @render()
@@ -18,11 +28,12 @@ class window.HandView extends Backbone.View
 
   render: ->
     @$el.children().detach()
-    @$el.html @template @model
+    @$el.html @template @model.attributes
     @$el.find('button').hide() unless @model.get('state') is 'playing'
     @$el.append @model.get('cards').map (card) ->
       new CardView(model: card).$el
     @$('.score').text @model.scores()[0]
+    @$el.prepend(@stateDivs[@model.get('state')])
 
 
 
