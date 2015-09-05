@@ -4,15 +4,29 @@ class window.App extends Backbone.Model
   initialize: ->
     @set 'deck', deck = new Deck()
     @set 'dealerHand', deck.dealDealer()
-    @set 'players', new Players([deck.dealPlayer(1),deck.dealPlayer(2),deck.dealPlayer(3),deck.dealPlayer(4),deck.dealPlayer(5)])
+    @set 'players', new Players([deck.dealPlayer(1, 1),deck.dealPlayer(2, 'Jack'),deck.dealPlayer(3, 'Jack'),deck.dealPlayer(4, 'Jack'),deck.dealPlayer(5, 'Jack')])
     @set 'currentPlayer', @get('players').first()
     @get('currentPlayer').set 'state', 'playing'
 
     # listen for change on state of hands in players
     @get('currentPlayer').on 'change:state', @chooseNextTurn, @
+    @get('players').on 'split', @splitHand, @
     # (@get 'players').on 'change:state', @setTurn, @
     # (@get 'dealerHand').on 'change:state', @endGame, @
 
+  splitHand: (player) ->
+    playerCard2 = player.get('cards').pop()
+    playerCard1 = player.get('cards').pop()
+
+    #using get and set so that change events fire in view
+    @get('players').add new Hand({
+      playerNum: player.get('playerNum')
+      name: player.get('name') + ' split'
+      cards: [playerCard2]
+      # bet
+      }, @get('deck'))
+
+    player.set('cards',[playerCard1])
 
 
   chooseNextTurn: -> 
@@ -23,6 +37,13 @@ class window.App extends Backbone.Model
       @setCurrentPlayer(null)
       @dealerTurn()
 
+  #handles changing the event listner
+  setCurrentPlayer: (nextPlayer) ->
+    @get('currentPlayer').off 'change:state'
+    @set('currentPlayer', nextPlayer);
+    if nextPlayer?
+      nextPlayer.set 'state', 'playing' 
+      @get('currentPlayer').on 'change:state', @chooseNextTurn, @
 
   dealerTurn: ->
     if @get('players').every (player) ->
@@ -45,13 +66,6 @@ class window.App extends Backbone.Model
         else player.set 'state', 'lost'
 
 
-  #handles changing the event listner
-  setCurrentPlayer: (nextPlayer) ->
-    @get('currentPlayer').off 'change:state'
-    @set('currentPlayer', nextPlayer);
-    if nextPlayer?
-      nextPlayer.set 'state', 'playing' 
-      @get('currentPlayer').on 'change:state', @chooseNextTurn, @
 
 
 

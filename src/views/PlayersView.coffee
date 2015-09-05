@@ -4,7 +4,7 @@ class window.PlayersView extends Backbone.View
 
   initialize: ->
     @render()
-    @collection.on 'add', @render, @
+    @collection.on 'change', @render, @
 
   render: ->
     @$el.children().detach()

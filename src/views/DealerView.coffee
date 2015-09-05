@@ -2,7 +2,7 @@ class window.DealerView extends Backbone.View
   className: 'hand dealer'
 
   template: _.template '<h2>
-                        Dealer
+                        <%= name %>
                       (<span class="score"></span>)
                         </h2>'
 
@@ -13,7 +13,7 @@ class window.DealerView extends Backbone.View
 
   render: ->
     @$el.children().detach()
-    @$el.html @template @model
+    @$el.html @template @model.attributes
     @$el.append @model.get('cards').map (card) ->
       new CardView(model: card).$el
-    @$('.score').text @model.scores()[0]
+    @$('.score').text @model.minScore()

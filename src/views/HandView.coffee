@@ -1,6 +1,6 @@
 class window.HandView extends Backbone.View
   className:'hand'
-  template: _.template '<h2>Player <%= player %>
+  template: _.template '<h2>Player <%= name %>
                         (<span class="score"></span>)
                         <button class="hit-button">Hit</button> 
                         <button class="stand-button">Stand</button>
@@ -13,27 +13,30 @@ class window.HandView extends Backbone.View
     playing:'<h1 class="playing"></h1>'
     blackJack:'<h1 class="blackJack">Winner Winner Chicken Dinner</h1>'
   
+  splitButton: '<button class="split-button">Split</button>'
 
   initialize: ->
     #this wont work!
     # debugger;
     @model.on 'hit', @render, @
     @model.on 'change', @render, @
+
     @render()
 
 
   events:
     'click .hit-button': -> @model.hit()
     'click .stand-button': -> @model.stand()
+    'click .split-button': -> @model.split()
 
   render: ->
-    # debugger
     @$el.children().detach()
     @$el.html @template @model.attributes
+    @$el.find('h2').append(@splitButton) if @model.canSplit() 
     @$el.find('button').hide() unless @model.get('state') is 'playing'
     @$el.append @model.get('cards').map (card) ->
       new CardView(model: card).$el
-    @$('.score').text @model.scores()[0]
+    @$('.score').text @model.minScore()
     @$el.prepend(@stateDivs[@model.get('state')])
 
 
