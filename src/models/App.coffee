@@ -5,13 +5,22 @@ class window.App extends Backbone.Model
     @set 'deck', deck = new Deck()
     @set 'players', new Players(deck.dealPlayer(1))
     @set 'dealerHand', deck.dealDealer()
-
     @get('players').first().set 'state', 'playing'
 
+    # listen for change on state of hands in players
+    (@get 'players').on 'change:state', @setTurn, @
 
 
-    # listen for stand button, and make dealer start playing
-    # (@get 'players').on 'standing', @get('dealerHand').play ,(@get 'dealerHand')
+    
+  setTurn: ->
+    if @get('players').every (player) ->
+      player.get('state') isnt 'beforeTurn' or player.get('state') isnt 'playing'  
+    then @get('dealerHand').play()
+    
+  # @get('dealerHand').play ,(@get 'dealerHand')
+    
+
+
     #resume work here later...
     # (@get 'playerHand').on 'lost'
     # (@get 'playerHand').on 'won'
