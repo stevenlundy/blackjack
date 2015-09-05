@@ -6,8 +6,12 @@ class window.App extends Backbone.Model
     @set 'players', new Players(deck.dealPlayer(1))
     @set 'dealerHand', deck.dealDealer()
 
+    @get('players').first().set 'state', 'playing'
+
+
+
     # listen for stand button, and make dealer start playing
-    (@get 'players').on 'standing', @get('dealerHand').play ,(@get 'dealerHand')
+    # (@get 'players').on 'standing', @get('dealerHand').play ,(@get 'dealerHand')
     #resume work here later...
     # (@get 'playerHand').on 'lost'
     # (@get 'playerHand').on 'won'

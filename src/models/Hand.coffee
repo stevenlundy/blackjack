@@ -9,6 +9,7 @@ class window.Hand extends Backbone.Model
     _.last(@get('cards'))
 
   stand: -> 
+    @set('state', 'standing')
     @trigger('standing', @)
 
 
