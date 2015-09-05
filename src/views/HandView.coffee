@@ -1,6 +1,6 @@
 class window.HandView extends Backbone.View
   className:'hand'
-  template: _.template '<h2>Player <%= name %>
+  template: _.template '<h2><%= name %>
                         (<span class="score"></span>)
                         <button class="hit-button">Hit</button> 
                         <button class="stand-button">Stand</button>
@@ -20,7 +20,6 @@ class window.HandView extends Backbone.View
     # debugger;
     @model.on 'hit', @render, @
     @model.on 'change', @render, @
-
     @render()
 
 
@@ -34,7 +33,6 @@ class window.HandView extends Backbone.View
     @$el.html @template @model.attributes
     # @$el.find('h2').append(@splitButton) if @model.canSplit() 
     @$el.find('button').hide() unless @model.get('state') is 'playing'
-    debugger
     @$el.append @model.get('cards').map (card) ->
       new CardView(model: card).$el
     @$('.score').text @model.minScore()

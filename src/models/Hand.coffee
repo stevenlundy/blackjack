@@ -1,9 +1,11 @@
 class window.Hand extends Backbone.Model
   defaults:{
     'state':'beforeTurn'
-    'cards': []
   }
   initialize: (params, @deck, @isDealer) ->
+
+  dealt: ->
+    @trigger('dealt', @)
 
   hit: ->
     @get('cards').push(@deck.pop())

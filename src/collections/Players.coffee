@@ -5,12 +5,11 @@ class window.Players extends Backbone.Collection
 
   initialize: (players, @deck)->
 
-
   addPlayer: (name) ->
-    debugger;
     @add(new Hand({
       name: name,
       playerNum: @length
+      cards:[]
       }, @deck))
 
 

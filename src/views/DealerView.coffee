@@ -9,6 +9,7 @@ class window.DealerView extends Backbone.View
   initialize: ->
     @model.on 'hit', @render, @
     @model.on 'reveal', @render, @
+    @model.on 'dealt', @render, @
     @render()
 
   render: ->

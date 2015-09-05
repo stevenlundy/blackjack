@@ -9,7 +9,6 @@ class window.AddPlayerView extends Backbone.View
 
   events: 
     'click button.add-player': ->
-      debugger;
       @collection.addPlayer @$el.find('.player-name-input').val()
       @$el.find('.player-name-input').val('') 
 

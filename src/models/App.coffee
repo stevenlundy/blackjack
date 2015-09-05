@@ -3,21 +3,49 @@
 class window.App extends Backbone.Model
   initialize: ->
     @set 'deck', deck = new Deck()
-    @set 'dealerHand', new Hand({name: 'Dealer'}, deck, true)
+    @set 'dealerHand', new Hand({name: 'Dealer', cards:[]}, deck, true)
     @set 'players', new Players([], deck)
     @set 'currentPlayer', new Hand()
+    @set 'state', 'waitForPlayers'
 
     # listen for change on state of hands in players
     @get('currentPlayer').on 'change:state', @chooseNextTurn, @
     @get('players').on 'split', @splitHand, @
+    @get('players').on 'add', => @set 'state', 'waitForDeal' 
     
+  
+  #Starts a game
+  deal: ->
+    @set 'state', 'inProgress'
+    @clearCards()
+    deck = @get 'deck'
+    @shuffleDeck() if deck.length < (@get('players').length + 1)*4
+    @get('players').each (player) ->
+      player.get('cards').push(deck.pop())
+    @get('dealerHand').get('cards').push(deck.pop().flip())
+    
+    @get('players').each (player) ->
+      player.get('cards').push(deck.pop())
+      player.set 'state', 'beforeTurn'
+    @get('dealerHand').get('cards').push(deck.pop())
 
+    @get('dealerHand').dealt();
+    
+    @setCurrentPlayer(@get('players').first())
+    @get('currentPlayer').set 'state', 'playing'
 
+  clearCards: ->
+    @get('players').each (player) -> 
+      player.set 'cards', []
+    @get('dealerHand').set 'cards', []
 
-    # STARTING GAME
-    # @set 'currentPlayer', @get('players').first()
-    # @get('currentPlayer').set 'state', 'playing'
+  shuffleDeck: ->
+    @set('deck', new Deck())
+    @get('players').each (player) =>
+      player.deck = @get('deck')
+    @get('dealerHand').deck = @get('deck')
 
+  #split hands
   splitHand: (player) ->
     playerCard2 = player.get('cards').pop()
     playerCard1 = player.get('cards').pop()
@@ -32,7 +60,7 @@ class window.App extends Backbone.Model
 
     player.set('cards',[playerCard1])
 
-
+  #detirmine next turn
   chooseNextTurn: -> 
     nextPlayer = @get('players').findWhere { 'state':'beforeTurn' }
     if nextPlayer? 
@@ -43,7 +71,8 @@ class window.App extends Backbone.Model
 
   #handles changing the event listner
   setCurrentPlayer: (nextPlayer) ->
-    @get('currentPlayer').off 'change:state'
+    if @get('currentPlayer')?
+      @get('currentPlayer').off 'change:state'
     @set('currentPlayer', nextPlayer);
     if nextPlayer?
       nextPlayer.set 'state', 'playing' 
@@ -59,6 +88,7 @@ class window.App extends Backbone.Model
 
   endGame: -> 
     console.log 'its over'
+    @set 'state', 'waitForDeal'
     waitingPlayers = @get('players').where({state: 'standing'})
     dealerScore = @get('dealerHand').minScore()
     if dealerScore > 21 then _.each waitingPlayers, (player) ->
@@ -68,6 +98,7 @@ class window.App extends Backbone.Model
         # debugger;
         if player.minScore() > dealerScore then player.set 'state', 'won'
         else player.set 'state', 'lost'
+
 
 
 
