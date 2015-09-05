@@ -5,13 +5,11 @@ class window.Hand extends Backbone.Model
   hit: ->
     @get('cards').push(@deck.pop())
     @trigger('hit', @)
-    if @minScore() > 21 then @trigger('lost', @)
+    if @minScore() > 21 then @set 'state', 'lost'
     _.last(@get('cards'))
 
   stand: -> 
     @set('state', 'standing')
-    @trigger('standing', @)
-
 
   hasAce: -> _.reduce @get('cards'), (memo, card) ->
     memo or card.get('value') is 1

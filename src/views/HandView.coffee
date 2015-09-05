@@ -8,7 +8,7 @@ class window.HandView extends Backbone.View
   initialize: ->
     #this wont work!
     @model.on 'hit', @render, @
-    @model.on 'standing', @render, @
+    @model.on 'change:state', @render, @
     @render()
 
 
