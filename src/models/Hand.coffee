@@ -1,6 +1,7 @@
 class window.Hand extends Backbone.Model
   defaults:{
     'state':'beforeTurn'
+    'cards': []
   }
   initialize: (params, @deck, @isDealer) ->
 

@@ -32,8 +32,9 @@ class window.HandView extends Backbone.View
   render: ->
     @$el.children().detach()
     @$el.html @template @model.attributes
-    @$el.find('h2').append(@splitButton) if @model.canSplit() 
+    # @$el.find('h2').append(@splitButton) if @model.canSplit() 
     @$el.find('button').hide() unless @model.get('state') is 'playing'
+    debugger
     @$el.append @model.get('cards').map (card) ->
       new CardView(model: card).$el
     @$('.score').text @model.minScore()

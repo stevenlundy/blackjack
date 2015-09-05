@@ -3,16 +3,20 @@
 class window.App extends Backbone.Model
   initialize: ->
     @set 'deck', deck = new Deck()
-    @set 'dealerHand', deck.dealDealer()
-    @set 'players', new Players([deck.dealPlayer(1, 1),deck.dealPlayer(2, 'Jack'),deck.dealPlayer(3, 'Jack'),deck.dealPlayer(4, 'Jack'),deck.dealPlayer(5, 'Jack')])
-    @set 'currentPlayer', @get('players').first()
-    @get('currentPlayer').set 'state', 'playing'
+    @set 'dealerHand', new Hand({name: 'Dealer'}, deck, true)
+    @set 'players', new Players([], deck)
+    @set 'currentPlayer', new Hand()
 
     # listen for change on state of hands in players
     @get('currentPlayer').on 'change:state', @chooseNextTurn, @
     @get('players').on 'split', @splitHand, @
-    # (@get 'players').on 'change:state', @setTurn, @
-    # (@get 'dealerHand').on 'change:state', @endGame, @
+    
+
+
+
+    # STARTING GAME
+    # @set 'currentPlayer', @get('players').first()
+    # @get('currentPlayer').set 'state', 'playing'
 
   splitHand: (player) ->
     playerCard2 = player.get('cards').pop()
